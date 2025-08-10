@@ -1,0 +1,10 @@
+# Requirements for StrictBot
+
+# Core stuff you need
+torch>=2.0.0
+transformers>=4.35.0
+
+# Optional: to upload to HuggingFace
+huggingface_hub
+
+# That's it! Keep it simple.
