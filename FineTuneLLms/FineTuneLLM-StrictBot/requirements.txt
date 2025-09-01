@@ -4,6 +4,9 @@
 torch>=2.0.0
 transformers>=4.35.0
 
+# For SSL certificate handling (fixes DeepSeek API connection issues)
+certifi>=2023.0.0
+
 # Optional: to upload to HuggingFace
 huggingface_hub
 
