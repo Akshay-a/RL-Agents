@@ -1,0 +1,63 @@
+# GRPO Training Configuration
+# Keep it simple - these are battle-tested values for 1.5B models
+
+# Model Configuration
+model_name: "Qwen/Qwen2.5-1.5B-Instruct"
+use_4bit: true  # Quantization to reduce VRAM usage
+
+# LoRA Configuration (Parameter-Efficient Fine-Tuning)
+lora:
+  r: 16  # Rank - higher = more parameters but better learning
+  lora_alpha: 32  # Scaling factor (typically 2x rank)
+  lora_dropout: 0.05
+  target_modules:  # Which layers to fine-tune
+    - q_proj
+    - v_proj
+    - k_proj
+    - o_proj
+  bias: "none"
+  task_type: "CAUSAL_LM"
+
+# SFT Training (Stage 1: Supervised Fine-Tuning)
+sft:
+  output_dir: "./checkpoints/sft"
+  num_epochs: 3
+  per_device_batch_size: 4
+  gradient_accumulation_steps: 4  # Effective batch size = 4 * 4 = 16
+  learning_rate: 2.0e-4
+  warmup_steps: 100
+  logging_steps: 10
+  save_steps: 100
+  max_seq_length: 1024
+  optim: "paged_adamw_8bit"  # Memory-efficient optimizer
+
+# GRPO Training (Stage 2: Reinforcement Learning)
+grpo:
+  output_dir: "./checkpoints/grpo"
+  num_epochs: 2
+  per_device_batch_size: 2  # Smaller due to generating multiple candidates
+  gradient_accumulation_steps: 8
+  learning_rate: 5.0e-5  # Lower than SFT
+  warmup_steps: 50
+  logging_steps: 5
+  save_steps: 50
+  max_seq_length: 1024
+
+  # GRPO-specific parameters
+  num_samples: 4  # Generate 4 candidates per prompt
+  temperature: 0.8  # Sampling temperature for diversity
+  kl_penalty: 0.05  # KL divergence constraint (prevent drift from base model)
+  reward_threshold: 0.5  # Reject generations below this score
+
+# Data paths
+data:
+  sft_train: "./data/sft_train.jsonl"
+  grpo_prompts: "./data/grpo_prompts.jsonl"
+  test_set: "./test_cases/golden_set.jsonl"
+
+# Generation parameters
+generation:
+  max_new_tokens: 512
+  do_sample: true
+  top_p: 0.95
+  repetition_penalty: 1.1
