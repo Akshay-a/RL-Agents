@@ -1,6 +1,30 @@
-# Customer Support AI Agent with GRPO
+# Customer Support AI Agent
 
-An end-to-end implementation of a customer support AI agent trained using **Group Relative Policy Optimization (GRPO)** and **Unsloth** for efficient fine-tuning. The agent learns to handle customer queries with accurate intent classification, policy compliance, empathy, and appropriate escalation.
+An end-to-end implementation of a customer support AI agent with **Unsloth** for efficient fine-tuning. The agent learns to handle customer queries with accurate intent classification, policy compliance, empathy, and appropriate escalation.
+
+---
+
+## ⚠️ IMPORTANT: Which Files to Use
+
+**🔧 SENIOR DEVELOPER REVIEW IDENTIFIED CRITICAL BUGS IN ORIGINAL IMPLEMENTATION**
+
+After thorough code review, fixed versions have been created:
+
+### ✅ USE THESE (Working Implementation):
+- **`data_prep_simple.py`** - Simplified data preparation (works!)
+- **`train_simple.py`** - Supervised fine-tuning with proper optimizer (actually trains!)
+- **`evaluate.py`** - Evaluation suite (works!)
+- **`inference.py`** - Deployment interface (works!)
+
+### ❌ DON'T USE (Has Critical Bugs):
+- ~~`train_grpo.py`~~ - Missing optimizer.step(), won't train
+- ~~`support_env.py`~~ - 400 lines of unused code
+- ~~`data_prep.py`~~ - Over-engineered, use simple version
+
+📖 **See `SENIOR_REVIEW.md` for detailed analysis of issues found**
+📖 **See `FIXES_APPLIED.md` for what was fixed and how to use corrected version**
+
+---
 
 ## 🎯 Project Overview
 
@@ -63,36 +87,37 @@ pip install -r requirements.txt
 ### 2. Prepare Data
 
 ```bash
-python data_prep.py
+python data_prep_simple.py
 ```
 
 This will:
-- Download Bitext customer support dataset
+- Download Bitext customer support dataset (or create synthetic data)
 - Clean and format data
 - Create train/val/test splits (70/15/15)
 - Save to `./data/` directory
 
-### 3. Test Reward Function
+### 3. Train Model
+
+```bash
+python train_simple.py
+```
+
+Training will:
+- Load LLaMA 3.2-3B with 4-bit quantization
+- Apply LoRA adapters (r=16)
+- Train with supervised fine-tuning for 3 epochs
+- ✅ **Actually updates model parameters** (has working optimizer!)
+- Save best model to `./checkpoints/best_model`
+
+**Expected time**: 2-3 hours on single A10G GPU
+
+### 4. Test Reward Function (Optional)
 
 ```bash
 python reward_function.py
 ```
 
 Runs test cases through reward function to validate scoring.
-
-### 4. Train Model
-
-```bash
-python train_grpo.py
-```
-
-Training will:
-- Load LLaMA 3.2-3B with 4-bit quantization
-- Apply LoRA adapters (r=16)
-- Train with GRPO for 3 epochs
-- Save best model to `./checkpoints/best_model`
-
-**Expected time**: 3-4 hours on single A10G GPU
 
 ### 5. Evaluate Model
 
@@ -106,7 +131,7 @@ Generates comprehensive evaluation report including:
 - Escalation metrics
 - Edge case testing
 
-### 6. Run Inference
+### 6. Use Trained Model
 
 **Interactive Chat:**
 ```bash
