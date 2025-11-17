@@ -1,0 +1,179 @@
+{
+  "accounts": [
+    {
+      "code": "1000",
+      "name": "Cash",
+      "category": "Asset",
+      "type": "debit",
+      "description": "Cash on hand and in bank accounts"
+    },
+    {
+      "code": "1100",
+      "name": "Accounts Receivable",
+      "category": "Asset",
+      "type": "debit",
+      "description": "Money owed by customers"
+    },
+    {
+      "code": "1200",
+      "name": "Inventory",
+      "category": "Asset",
+      "type": "debit",
+      "description": "Goods available for sale"
+    },
+    {
+      "code": "1300",
+      "name": "Prepaid Expenses",
+      "category": "Asset",
+      "type": "debit",
+      "description": "Expenses paid in advance"
+    },
+    {
+      "code": "1500",
+      "name": "Equipment",
+      "category": "Asset",
+      "type": "debit",
+      "description": "Office and production equipment"
+    },
+    {
+      "code": "1600",
+      "name": "Accumulated Depreciation - Equipment",
+      "category": "Asset",
+      "type": "credit",
+      "description": "Contra-asset account for equipment depreciation"
+    },
+    {
+      "code": "1700",
+      "name": "Vehicles",
+      "category": "Asset",
+      "type": "debit",
+      "description": "Company vehicles"
+    },
+    {
+      "code": "1800",
+      "name": "Buildings",
+      "category": "Asset",
+      "type": "debit",
+      "description": "Real estate property"
+    },
+    {
+      "code": "2000",
+      "name": "Accounts Payable",
+      "category": "Liability",
+      "type": "credit",
+      "description": "Money owed to suppliers"
+    },
+    {
+      "code": "2100",
+      "name": "Salaries Payable",
+      "category": "Liability",
+      "type": "credit",
+      "description": "Wages owed to employees"
+    },
+    {
+      "code": "2200",
+      "name": "Taxes Payable",
+      "category": "Liability",
+      "type": "credit",
+      "description": "Taxes owed to government"
+    },
+    {
+      "code": "2300",
+      "name": "Unearned Revenue",
+      "category": "Liability",
+      "type": "credit",
+      "description": "Payments received before services rendered"
+    },
+    {
+      "code": "2500",
+      "name": "Notes Payable",
+      "category": "Liability",
+      "type": "credit",
+      "description": "Formal written promises to pay"
+    },
+    {
+      "code": "2600",
+      "name": "Loans Payable",
+      "category": "Liability",
+      "type": "credit",
+      "description": "Long-term debt obligations"
+    },
+    {
+      "code": "3000",
+      "name": "Owner's Capital",
+      "category": "Equity",
+      "type": "credit",
+      "description": "Owner's investment in the business"
+    },
+    {
+      "code": "3100",
+      "name": "Retained Earnings",
+      "category": "Equity",
+      "type": "credit",
+      "description": "Accumulated profits not distributed"
+    },
+    {
+      "code": "3200",
+      "name": "Owner's Drawings",
+      "category": "Equity",
+      "type": "debit",
+      "description": "Owner's withdrawals from the business"
+    },
+    {
+      "code": "4000",
+      "name": "Sales Revenue",
+      "category": "Revenue",
+      "type": "credit",
+      "description": "Income from selling goods or services"
+    },
+    {
+      "code": "4100",
+      "name": "Service Revenue",
+      "category": "Revenue",
+      "type": "credit",
+      "description": "Income from providing services"
+    },
+    {
+      "code": "4200",
+      "name": "Interest Income",
+      "category": "Revenue",
+      "type": "credit",
+      "description": "Income from investments"
+    },
+    {
+      "code": "5000",
+      "name": "Cost of Goods Sold",
+      "category": "Expense",
+      "type": "debit",
+      "description": "Direct costs of producing goods sold"
+    },
+    {
+      "code": "5100",
+      "name": "Salaries Expense",
+      "category": "Expense",
+      "type": "debit",
+      "description": "Employee compensation"
+    },
+    {
+      "code": "5200",
+      "name": "Rent Expense",
+      "category": "Expense",
+      "type": "debit",
+      "description": "Cost of renting space"
+    },
+    {
+      "code": "5300",
+      "name": "Utilities Expense",
+      "category": "Expense",
+      "type": "debit",
+      "description": "Electricity, water, gas, internet costs"
+    },
+    {
+      "code": "5400",
+      "name": "Depreciation Expense",
+      "category": "Expense",
+      "type": "debit",
+      "description": "Allocation of asset cost over time"
+    }
+  ]
+}
