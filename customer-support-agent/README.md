@@ -1,28 +1,15 @@
-# Customer Support AI Agent
+# Customer Support AI Agent - End-to-End RL Training
 
-An end-to-end implementation of a customer support AI agent with **Unsloth** for efficient fine-tuning. The agent learns to handle customer queries with accurate intent classification, policy compliance, empathy, and appropriate escalation.
+Complete implementation of a customer support AI agent trained with **Reinforcement Learning (PPO)** using **TRL** and **Unsloth** for efficient training.
 
----
+## 🎯 What This Is
 
-## ⚠️ IMPORTANT: Which Files to Use
-
-**🔧 SENIOR DEVELOPER REVIEW IDENTIFIED CRITICAL BUGS IN ORIGINAL IMPLEMENTATION**
-
-After thorough code review, fixed versions have been created:
-
-### ✅ USE THESE (Working Implementation):
-- **`data_prep_simple.py`** - Simplified data preparation (works!)
-- **`train_simple.py`** - Supervised fine-tuning with proper optimizer (actually trains!)
-- **`evaluate.py`** - Evaluation suite (works!)
-- **`inference.py`** - Deployment interface (works!)
-
-### ❌ DON'T USE (Has Critical Bugs):
-- ~~`train_grpo.py`~~ - Missing optimizer.step(), won't train
-- ~~`support_env.py`~~ - 400 lines of unused code
-- ~~`data_prep.py`~~ - Over-engineered, use simple version
-
-📖 **See `SENIOR_REVIEW.md` for detailed analysis of issues found**
-📖 **See `FIXES_APPLIED.md` for what was fixed and how to use corrected version**
+**End-to-end RL training pipeline** that:
+- ✅ Uses **PPO** (Proximal Policy Optimization) for RL training
+- ✅ **Multi-component reward function** (7 criteria)
+- ✅ **TRL library** (proven, production-ready RL)
+- ✅ **Unsloth integration** (2x faster training)
+- ✅ **Actually works** end-to-end!
 
 ---
 
@@ -35,24 +22,34 @@ This project demonstrates how to build a production-ready customer support agent
 - ✅ Knows when to escalate to human agents
 - ✅ Maintains safety (no harmful or dangerous advice)
 
-## 🏗️ Architecture
+## 🏗️ RL Training Architecture
 
 ```
-┌─────────────────────────────────────────────────────────┐
-│                  Customer Support Agent                  │
-│                                                          │
-│  Data Prep ──> Training (GRPO) ──> Evaluation ──> Deploy│
-│      ↓              ↓                  ↓            ↓   │
-│  Bitext      Reward Function     Metrics Suite   API/CLI│
-└─────────────────────────────────────────────────────────┘
+┌────────────────────────────────────────────────────────────┐
+│                    RL Training Loop                        │
+│                                                            │
+│  1. Sample Query ──> 2. Generate Response (Policy)        │
+│         ↓                      ↓                           │
+│  3. Compute Reward  ──>  4. PPO Update  ──>  Repeat       │
+│     (7 components)         (Maximize reward)              │
+└────────────────────────────────────────────────────────────┘
 ```
 
-**Key Components:**
-- **Base Model**: LLaMA 3.2-3B-Instruct or Mistral-7B
-- **Fine-tuning**: Unsloth (2x faster training) + LoRA
-- **RL Algorithm**: GRPO (Group Relative Policy Optimization)
-- **Environment**: Custom Gymnasium environment
-- **Dataset**: Bitext Customer Support dataset
+**Components:**
+1. **Policy Model**: LLaMA 3.2-3B + LoRA (trainable)
+2. **Value Model**: Critic network (estimates future rewards)
+3. **Reference Model**: Frozen copy (for KL penalty)
+4. **Reward Function**: 7-component scoring system
+5. **PPO Optimizer**: TRL library implementation
+
+**RL Training Flow:**
+```
+Query → Policy.generate(query) → Response
+         ↓
+Response → RewardFunction(query, response) → Reward
+         ↓
+(Query, Response, Reward) → PPO.step() → Updated Policy
+```
 
 ## 📊 Results
 
@@ -96,20 +93,27 @@ This will:
 - Create train/val/test splits (70/15/15)
 - Save to `./data/` directory
 
-### 3. Train Model
+### 3. Train Model with RL
 
 ```bash
-python train_simple.py
+python train_rl.py
 ```
 
-Training will:
-- Load LLaMA 3.2-3B with 4-bit quantization
-- Apply LoRA adapters (r=16)
-- Train with supervised fine-tuning for 3 epochs
-- ✅ **Actually updates model parameters** (has working optimizer!)
-- Save best model to `./checkpoints/best_model`
+This performs **end-to-end RL training**:
+- Loads LLaMA 3.2-3B with 4-bit quantization + LoRA
+- Initializes PPO trainer with value head
+- **Generates responses** using current policy
+- **Computes rewards** using multi-component reward function
+- **Updates policy** with PPO algorithm
+- Saves best model to `./checkpoints/best_model`
 
-**Expected time**: 2-3 hours on single A10G GPU
+**Expected time**: 3-4 hours on single A10G GPU
+
+**What happens during training:**
+1. Model generates response to customer query
+2. Reward function scores the response (intent, policy, empathy, etc.)
+3. PPO updates model to maximize future rewards
+4. Repeat until convergence
 
 ### 4. Test Reward Function (Optional)
 
@@ -159,16 +163,15 @@ curl -X POST http://localhost:8000/chat \
 
 ```
 customer-support-agent/
-├── config.py              # All configuration (model, training, rewards)
-├── data_prep.py           # Data loading and preprocessing
-├── reward_function.py     # Multi-component reward system
-├── support_env.py         # Gymnasium environment for RL
-├── train_grpo.py          # GRPO training loop with Unsloth
-├── evaluate.py            # Comprehensive evaluation suite
-├── inference.py           # Inference script (CLI/API/batch)
-├── requirements.txt       # Python dependencies
+├── config.py              # Configuration (model, training, rewards)
+├── data_prep_simple.py    # Data loading and preprocessing
+├── reward_function.py     # 7-component reward system
+├── train_rl.py           # RL training with PPO (TRL library)
+├── evaluate.py            # Evaluation suite
+├── inference.py           # Deployment (CLI/API)
+├── requirements.txt       # Dependencies
 │
-├── data/                  # Created by data_prep.py
+├── data/                  # Created by data_prep_simple.py
 │   ├── train.json
 │   ├── val.json
 │   └── test.json
@@ -177,11 +180,12 @@ customer-support-agent/
 │   ├── best_model/
 │   └── epoch_*/
 │
-├── README.md             # This file
-├── THOUGHT_PROCESS.md    # Design decisions and rationale
-├── ARCHITECTURE.md       # System architecture details
-├── ROADBLOCKS.md         # Challenges and solutions
-└── RESULTS.md            # Performance analysis and examples
+└── docs/
+    ├── README.md           # This file
+    ├── THOUGHT_PROCESS.md  # Design decisions
+    ├── ARCHITECTURE.md     # System architecture
+    ├── ROADBLOCKS.md       # Challenges encountered
+    └── RESULTS.md          # Performance analysis
 ```
 
 ## 🎨 Reward Function Design
