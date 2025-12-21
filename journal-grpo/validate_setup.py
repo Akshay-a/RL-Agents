@@ -70,12 +70,12 @@ try:
     assert result["breakdown"]["balance"] == -1.0, "Unbalanced entry should get -1.0 balance score"
     assert result["is_valid"] == False, "Unbalanced entry should be invalid"
 
-    print("✓ Reward model working correctly")
+    print("[OK] Reward model working correctly")
     print(f"  - Chart of accounts: {len(reward_model.chart_of_accounts)} accounts loaded")
     print(f"  - Scoring: Valid entry gets 2.0, unbalanced gets penalty")
 
 except Exception as e:
-    print(f"✗ Reward model test failed: {e}")
+    print(f"[FAIL] Reward model test failed: {e}")
     sys.exit(1)
 
 # ============================================================================
@@ -92,7 +92,7 @@ try:
     with open(schema_path) as f:
         schema = json.load(f)
     assert "properties" in schema, "Invalid schema format"
-    print(f"✓ schema.json exists and is valid")
+    print(f"[OK] schema.json exists and is valid")
 
     # Check chart of accounts
     coa_path = Path("data/chart_of_accounts.json")
@@ -100,17 +100,17 @@ try:
     with open(coa_path) as f:
         coa = json.load(f)
     assert len(coa["accounts"]) == 25, f"Expected 25 accounts, found {len(coa['accounts'])}"
-    print(f"✓ chart_of_accounts.json exists with 25 accounts")
+    print(f"[OK] chart_of_accounts.json exists with 25 accounts")
 
     # Check golden test set
     test_path = Path("test_cases/golden_set.jsonl")
     assert test_path.exists(), "golden_set.jsonl not found"
     test_count = sum(1 for _ in open(test_path))
     assert test_count == 50, f"Expected 50 test cases, found {test_count}"
-    print(f"✓ golden_set.jsonl exists with 50 test cases")
+    print(f"[OK] golden_set.jsonl exists with 50 test cases")
 
 except Exception as e:
-    print(f"✗ Data files test failed: {e}")
+    print(f"[FAIL] Data files test failed: {e}")
     sys.exit(1)
 
 # ============================================================================
@@ -133,14 +133,14 @@ try:
     assert "sft" in config, "Missing sft config"
     assert "grpo" in config, "Missing grpo config"
 
-    print(f"✓ Configuration file valid")
+    print(f"[OK] Configuration file valid")
     print(f"  - Model: {config['model_name']}")
     print(f"  - LoRA rank: {config['lora']['r']}")
     print(f"  - SFT epochs: {config['sft']['num_epochs']}")
     print(f"  - GRPO epochs: {config['grpo']['num_epochs']}")
 
 except Exception as e:
-    print(f"✗ Configuration test failed: {e}")
+    print(f"[FAIL] Configuration test failed: {e}")
     sys.exit(1)
 
 # ============================================================================
@@ -167,7 +167,7 @@ try:
     result = reward_model.compute_reward(entry)
     assert result["is_valid"], f"Generated entry is invalid: {result['messages']}"
 
-    print(f"✓ SFT data generator working")
+    print(f"[OK] SFT data generator working")
     print(f"  - Sample prompt: {prompt[:60]}...")
     print(f"  - Reward score: {result['total_score']}")
 
@@ -179,11 +179,11 @@ try:
     assert prompt is not None, "Failed to generate GRPO prompt"
     assert len(prompt) > 10, "Prompt too short"
 
-    print(f"✓ GRPO prompt generator working")
+    print(f"[OK] GRPO prompt generator working")
     print(f"  - Sample prompt: {prompt[:60]}...")
 
 except Exception as e:
-    print(f"✗ Data generator test failed: {e}")
+    print(f"[FAIL] Data generator test failed: {e}")
     sys.exit(1)
 
 # ============================================================================
@@ -206,16 +206,16 @@ missing = []
 for module, name in dependencies.items():
     try:
         __import__(module)
-        print(f"✓ {name}")
+        print(f"[OK] {name}")
     except ImportError:
-        print(f"✗ {name} - NOT INSTALLED")
+        print(f"[FAIL] {name} - NOT INSTALLED")
         missing.append(module)
 
 if missing:
-    print(f"\n⚠ Missing dependencies: {', '.join(missing)}")
+    print(f"\n[WARNING] Missing dependencies: {', '.join(missing)}")
     print("Install with: pip install -r requirements.txt")
 else:
-    print("\n✓ All dependencies installed")
+    print("\n[OK] All dependencies installed")
 
 # ============================================================================
 # TEST 6: Documentation Validation
@@ -234,9 +234,9 @@ for doc, description in docs.items():
     path = Path(doc)
     if path.exists():
         size_kb = path.stat().st_size / 1024
-        print(f"✓ {doc} ({size_kb:.1f} KB) - {description}")
+        print(f"[OK] {doc} ({size_kb:.1f} KB) - {description}")
     else:
-        print(f"✗ {doc} - MISSING")
+        print(f"[FAIL] {doc} - MISSING")
 
 # ============================================================================
 # TEST 7: Training Scripts
@@ -256,9 +256,9 @@ for script, description in scripts.items():
     path = Path(script)
     if path.exists():
         lines = sum(1 for _ in open(path))
-        print(f"✓ {script} ({lines} lines) - {description}")
+        print(f"[OK] {script} ({lines} lines) - {description}")
     else:
-        print(f"✗ {script} - MISSING")
+        print(f"[FAIL] {script} - MISSING")
 
 # ============================================================================
 # SUMMARY
@@ -269,7 +269,7 @@ print("VALIDATION SUMMARY")
 print("="*70)
 
 print("""
-✓ All core components validated!
+[OK] All core components validated!
 
 Next Steps:
 
